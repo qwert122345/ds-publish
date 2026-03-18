@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Design System Preview</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:24px;font-family:'Inter',-apple-system,sans-serif;font-size:12px;color:#333;background:#fff;min-height:100vh}
+h1{font-size:18px;margin:0 0 20px 0;font-weight:600}
+h2{margin:0 0 10px 0;font-size:13px;font-weight:600}
+.badge{font-size:10px;font-weight:500;padding:2px 6px;background:#e8e8e8;border-radius:4px;color:#666;margin-left:6px}
+.accordion-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.accordion-header:hover{opacity:0.85}
+.accordion-chevron{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;color:#4a4a4a;transition:transform 0.2s;flex-shrink:0}
+.accordion-chevron svg{width:16px;height:16px}
+.accordion.collapsed .accordion-chevron{transform:rotate(180deg)}
+.accordion-body{overflow:hidden}
+.accordion.collapsed .accordion-body{display:none}
+.token-row{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:6px;background:#fafafa;border-radius:6px;border:1px solid #eee}
+.token-swatch{width:28px;height:28px;border-radius:4px;flex-shrink:0;border:1px solid rgba(0,0,0,0.1)}
+.token-name{font-weight:500}
+.token-ref{font-size:11px;color:#888;font-family:monospace;margin:2px 0}
+.token-value{font-size:11px;color:#666;font-family:monospace}
+.token-type{font-size:10px;color:#999}
+.comp-row{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:6px;background:#fafafa;border-radius:6px;border:1px solid #eee}
+.comp-thumb{width:36px;height:36px;border-radius:4px;flex-shrink:0;border:1px solid rgba(0,0,0,0.1);object-fit:contain;background:#fff}
+.comp-name{font-weight:500;font-size:11px}
+.style-row{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:6px;background:#fafafa;border-radius:6px;border:1px solid #eee}
+.style-swatch{width:28px;height:28px;border-radius:4px;flex-shrink:0;border:1px solid rgba(0,0,0,0.1)}
+.style-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#888;font-size:14px;font-weight:700}
+.collection-group{margin-bottom:24px;padding:12px;background:#fafafa;border-radius:8px;border:1px solid #eee}
+.collection-title{font-size:12px;font-weight:700;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #ddd}
+.token-group{margin-bottom:16px}
+.token-group-title{font-size:11px;font-weight:600;color:#666;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #e8e8e8}
+.singles-section{margin-top:20px;padding-top:16px;border-top:1px solid #e8e8e8}
+.publish-tabs{display:flex;gap:4px;margin-bottom:12px}
+.publish-tab{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:500;background:#f0f0f0;border:none;cursor:pointer;color:#666}
+.publish-tab:hover{background:#e5e5e5}
+.publish-tab.active{background:#333;color:#fff}
+.publish-panel{display:none}
+.publish-panel.active{display:block}
+.section{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0f0f0}
+.section:last-child{border-bottom:none}
+.empty{color:#999;font-size:11px;padding:12px 0}
+.page{display:none}
+.page.active{display:block}
+.nav{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.nav-btn{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:500;background:#f0f0f0;border:none;cursor:pointer;color:#333}
+.nav-btn:hover{background:#e5e5e5}
+.nav-btn.active{background:#333;color:#fff}
+.upload-zone{max-width:480px;margin:40px auto;padding:48px 32px;border:2px dashed #ddd;border-radius:12px;text-align:center;background:#fafafa}
+.upload-zone h2{margin-bottom:12px}
+.upload-zone p{color:#666;font-size:13px;margin:8px 0 20px 0}
+.file-btn{padding:10px 20px;background:#0d99ff;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer}
+.file-btn:hover{background:#0b85dd}
+input[type=file]{display:none}
+.paste-area{width:100%;min-height:80px;margin-top:16px;padding:12px;border:1px solid #ddd;border-radius:6px;font-family:monospace;font-size:11px;resize:vertical}
+</style>
+</head>
+<body>
+<div id="upload" class="upload-zone">
+  <h2>Design System Preview</h2>
+  <p>Load a design system exported from the Figma plugin</p>
+  <label for="file-input" class="file-btn">Choose JSON file</label>
+  <input type="file" id="file-input" accept=".json,application/json">
+  <p style="margin-top:16px">or paste JSON below:</p>
+  <textarea id="paste-area" class="paste-area" placeholder='{"tokens":[],"components":[],"styles":[]}'></textarea>
+</div>
+<div id="content" style="display:none">
+  <h1>Design System Preview</h1>
+  <div class="nav">
+    <button class="nav-btn active" data-section="tokens">Token</button>
+    <button class="nav-btn" data-section="components">Component</button>
+    <button class="nav-btn" data-section="styles">Style</button>
+  </div>
+  <div id="tokens" class="section page active"></div>
+  <div id="components" class="section page"></div>
+  <div id="styles" class="section page"></div>
+</div>
+<script type="application/json" id="ds-embed">__DS_EMBED__</script>
+<script>
+(function(){
+  var upload=document.getElementById('upload'),content=document.getElementById('content'),fileInput=document.getElementById('file-input'),pasteArea=document.getElementById('paste-area');
+  function escapeHtml(s){var d=document.createElement('div');d.textContent=s!=null?s:'';return d.innerHTML}
+  function loadData(data){upload.style.display='none';content.style.display='block';render({tokens:data.tokens||[],components:data.components||[],styles:data.styles||[],componentsLoading:false});}
+  var embed=document.getElementById('ds-embed');if(embed&&embed.textContent&&embed.textContent!=='__DS_EMBED__'){try{loadData(JSON.parse(embed.textContent))}catch(e){}}
+  fileInput.onchange=function(){var f=fileInput.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{loadData(JSON.parse(r.result))}catch(e){alert('Invalid JSON')}};r.readAsText(f);fileInput.value='';};
+  pasteArea.onpaste=function(){setTimeout(function(){var v=pasteArea.value.trim();if(v){try{loadData(JSON.parse(v));pasteArea.value=''}catch(e){}}},10)};
+  document.querySelectorAll('.nav-btn').forEach(function(btn){btn.onclick=function(){document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});var el=document.getElementById(btn.dataset.section);if(el)el.classList.add('active')}});
+  document.getElementById('content').addEventListener('click',function(e){var h=e.target.closest('.accordion-header');if(h)h.closest('.accordion').classList.toggle('collapsed');var pt=e.target.closest('.publish-tab');if(pt){var c=pt.closest('.section');if(!c)return;c.querySelectorAll('.publish-tab').forEach(function(b){b.classList.remove('active')});pt.classList.add('active');var pub=pt.dataset.publish;c.querySelectorAll('.publish-panel').forEach(function(p){p.classList.toggle('active',p.dataset.publish===pub)})}});
+  function isTokenUnpublished(t){return ((t.collectionName||'').charAt(0)==='.'||(t.name||'').charAt(0)==='.');}
+  function isCompUnpublished(c){return (c.name||'').charAt(0)==='.';}
+  function byCollection(list){var o={};list.forEach(function(t){var c=t.collectionName||'Other';if(!o[c])o[c]=[];o[c].push(t)});return o;}
+  function groupsFromList(list){var g={};list.forEach(function(t){var p=t.name&&t.name.includes('/')?t.name.split('/').slice(0,-1).join('/'):'Other';if(!g[p])g[p]=[];g[p].push(t)});return Object.keys(g).sort(function(a,b){return a==='Other'?1:b==='Other'?-1:a.localeCompare(b)}).map(function(k){return{title:k,list:g[k]}});}
+  function renderTokenContent(list){if(!list.length)return'<p class="empty">No items.</p>';var byColl=byCollection(list);var collOrder=Object.keys(byColl).sort(function(a,b){return a==='Other'?1:b==='Other'?-1:a.localeCompare(b)});return collOrder.map(function(coll){var sg=groupsFromList(byColl[coll]);if(byColl[coll].length===1){var t=byColl[coll][0];var rl=t.referencedName?'<div class="token-ref">'+escapeHtml(t.referencedName)+'</div>':'';return'<div class="token-row">'+(t.type==='COLOR'&&t.value?'<div class="token-swatch" style="background:'+t.value+'"></div>':'')+'<div><div class="token-name">'+escapeHtml(t.name)+'</div>'+rl+'<div class="token-value">'+escapeHtml(String(t.value))+'</div><div class="token-type">'+t.type+'</div></div></div>';}return'<div class="accordion collection-group"><div class="accordion-header collection-title"><span>'+escapeHtml(coll)+' <span class="badge">'+byColl[coll].length+'</span></span><span class="accordion-chevron"><svg viewBox="0 0 24 24"><path d="M6 14l6-6 6 6" stroke="currentColor" stroke-width="2" fill="none"/></svg></span></div><div class="accordion-body">'+sg.map(function(s){if(s.list.length===1){var t=s.list[0];var rl=t.referencedName?'<div class="token-ref">'+escapeHtml(t.referencedName)+'</div>':'';return'<div class="token-row">'+(t.type==='COLOR'&&t.value?'<div class="token-swatch" style="background:'+t.value+'"></div>':'')+'<div><div class="token-name">'+escapeHtml(t.name)+'</div>'+rl+'<div class="token-value">'+escapeHtml(String(t.value))+'</div><div class="token-type">'+t.type+'</div></div></div>';}return'<div class="accordion token-group"><div class="accordion-header token-group-title"><span>'+escapeHtml(s.title)+' <span class="badge">'+s.list.length+'</span></span><span class="accordion-chevron"><svg viewBox="0 0 24 24"><path d="M6 14l6-6 6 6" stroke="currentColor" stroke-width="2" fill="none"/></svg></span></div><div class="accordion-body">'+s.list.map(function(t){var rl=t.referencedName?'<div class="token-ref">'+escapeHtml(t.referencedName)+'</div>':'';return'<div class="token-row">'+(t.type==='COLOR'&&t.value?'<div class="token-swatch" style="background:'+t.value+'"></div>':'')+'<div><div class="token-name">'+escapeHtml(t.name)+'</div>'+rl+'<div class="token-value">'+escapeHtml(String(t.value))+'</div><div class="token-type">'+t.type+'</div></div></div>';}).join('')+'</div></div>';}).join('')+'</div></div>';}).join('');}
+  function compByGroup(list){var g={};list.forEach(function(c){var p=c.name&&c.name.includes('/')?c.name.split('/')[0]:'Other';if(!g[p])g[p]=[];g[p].push(c)});return Object.keys(g).sort(function(a,b){return a==='Other'?1:b==='Other'?-1:a.localeCompare(b)}).map(function(k){return{title:k,list:g[k]}});}
+  function compRow(c){var th=c.preview?'<img class="comp-thumb" src="data:image/png;base64,'+c.preview+'" alt="">':'<div class="comp-thumb" style="background:#e8e8e8"></div>';return'<div class="comp-row">'+th+'<div class="comp-name">'+escapeHtml(c.name)+'</div></div>';}
+  function renderCompContent(list){if(!list.length)return'<p class="empty">No items.</p>';var g=compByGroup(list);var multi=g.filter(function(gr){return gr.list.length>1});multi.sort(function(a,b){return(a.title||'').localeCompare(b.title||'')});var singles=g.filter(function(gr){return gr.list.length===1}).reduce(function(a,gr){return a.concat(gr.list)},[]);singles.sort(function(a,b){return(a.name||'').localeCompare(b.name||'')});var html=multi.map(function(gr){gr.list.sort(function(a,b){return(a.name||'').localeCompare(b.name||'')});return'<div class="accordion token-group"><div class="accordion-header token-group-title"><span>'+escapeHtml(gr.title)+' <span class="badge">'+gr.list.length+'</span></span><span class="accordion-chevron"><svg viewBox="0 0 24 24"><path d="M6 14l6-6 6 6" stroke="currentColor" stroke-width="2" fill="none"/></svg></span></div><div class="accordion-body">'+gr.list.map(compRow).join('')+'</div></div>';}).join('');if(singles.length)html+='<div class="singles-section">'+singles.map(compRow).join('')+'</div>';return html;}
+  function styleRow(s){var p='';if(s.styleType==='FILL'&&s.color)p='<div class="style-swatch" style="background:'+s.color+'"></div>';else if(s.styleType==='TEXT')p='<div class="style-icon">Aa</div>';else if(s.styleType==='EFFECT')p='<div class="style-icon" style="font-size:12px">◆</div>';else if(s.styleType==='GRID')p='<div class="style-icon" style="font-size:10px">▦</div>';else p='<div class="style-swatch" style="background:#e8e8e8"></div>';return'<div class="style-row '+(s.styleType||'').toLowerCase()+'">'+p+'<div class="comp-name">'+escapeHtml(s.name)+'</div></div>';}
+  function render(data){var tokens=data.tokens||[],components=data.components||[],styles=data.styles||[];var tokPub=tokens.filter(function(t){return!isTokenUnpublished(t)}),tokUnpub=tokens.filter(isTokenUnpublished);var tokenTabs='';if(tokPub.length||tokUnpub.length)tokenTabs='<div class="publish-tabs"><button class="publish-tab active" data-publish="1">Published <span class="badge">'+tokPub.length+'</span></button><button class="publish-tab" data-publish="0">Not published <span class="badge">'+tokUnpub.length+'</span></button></div><div class="publish-panel active" data-publish="1">'+renderTokenContent(tokPub)+'</div><div class="publish-panel" data-publish="0">'+renderTokenContent(tokUnpub)+'</div>';document.getElementById('tokens').innerHTML=tokens.length?'<h2>Token <span class="badge">'+tokens.length+'</span></h2>'+tokenTabs:'<h2>Token <span class="badge">0</span></h2><p class="empty">No variables.</p>';var compPub=components.filter(function(c){return!isCompUnpublished(c)}),compUnpub=components.filter(isCompUnpublished);var compTabs='';if(compPub.length||compUnpub.length)compTabs='<div class="publish-tabs"><button class="publish-tab active" data-publish="1">Published <span class="badge">'+compPub.length+'</span></button><button class="publish-tab" data-publish="0">Not published <span class="badge">'+compUnpub.length+'</span></button></div><div class="publish-panel active" data-publish="1">'+renderCompContent(compPub)+'</div><div class="publish-panel" data-publish="0">'+renderCompContent(compUnpub)+'</div>';document.getElementById('components').innerHTML=components.length?'<h2>Component <span class="badge">'+components.length+'</span></h2>'+compTabs:'<h2>Component <span class="badge">0</span></h2><p class="empty">No components.</p>';var labels={FILL:'Color',TEXT:'Text style',EFFECT:'Effect',GRID:'Grid'},byType={FILL:[],TEXT:[],EFFECT:[],GRID:[]};styles.forEach(function(s){(byType[s.styleType]||byType.FILL).push(s)});var styleHtml=['FILL','TEXT','EFFECT','GRID'].map(function(type){var list=byType[type];if(!list.length)return'';if(list.length===1)return'<div class="token-group"><div class="token-group-title">'+labels[type]+' <span class="badge">1</span></div>'+styleRow(list[0])+'</div>';return'<div class="accordion token-group"><div class="accordion-header token-group-title"><span>'+labels[type]+' <span class="badge">'+list.length+'</span></span><span class="accordion-chevron"><svg viewBox="0 0 24 24"><path d="M6 14l6-6 6 6" stroke="currentColor" stroke-width="2" fill="none"/></svg></span></div><div class="accordion-body">'+list.map(styleRow).join('')+'</div></div>';}).filter(Boolean).join('');document.getElementById('styles').innerHTML=styles.length?'<h2>Style <span class="badge">'+styles.length+'</span></h2>'+styleHtml:'<h2>Style <span class="badge">0</span></h2><p class="empty">No styles.</p>';}
+  var params=new URLSearchParams(location.search);var dataUrl=params.get('data')||params.get('url');if(dataUrl){fetch(dataUrl).then(function(r){return r.json()}).then(loadData).catch(function(){})}
+})();
+</script>
+</body>
+</html>
